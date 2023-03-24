@@ -20,14 +20,12 @@ class UserController extends Controller {
 
     public function requestToServer() {
 
-        $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, $this->url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				$ch = $this->createCurlConnection();
 
         $users = curl_exec($ch);
 
-        curl_close($ch);
+        $this->closeCurlConnection($ch);
 
         $this->isReaded = true;
 
@@ -35,6 +33,19 @@ class UserController extends Controller {
             'users' => json_decode($users, true)
         ]);
 
+    }
+
+    private function createCurlConnection() {
+	    $ch = curl_init();
+
+	    curl_setopt($ch, CURLOPT_URL, $this->url);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	    return $ch;
+    }
+
+    private function closeCurlConnection($ch) {
+    	curl_close($ch);
     }
 
 }
